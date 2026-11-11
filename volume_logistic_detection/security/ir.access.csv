@@ -1,0 +1,5 @@
+id,name,model_id,group_id/id,operation,domain
+access_vld_truck_box_user,vld.truck.box.user,vld.truck.box,base.group_user,crud,
+access_vld_item_class_user,vld.item.class.user,vld.item.class,base.group_user,crud,
+access_vld_session_user,vld.session.user,vld.session,base.group_user,crud,
+access_vld_session_item_user,vld.session.item.user,vld.session.item,base.group_user,crud,

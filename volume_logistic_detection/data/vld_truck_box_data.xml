@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Typical inner cargo sizes in cm. Vehicles vary by model and body builder,
+         so edit these under Configuration to match your own fleet. -->
+
+    <record id="truck_pickup_small" model="vld.truck.box">
+        <field name="name">Pickup Small (Carry / Gran Max)</field>
+        <field name="length_cm">230</field>
+        <field name="width_cm">140</field>
+        <field name="height_cm">120</field>
+    </record>
+
+    <record id="truck_pickup_medium" model="vld.truck.box">
+        <field name="name">Pickup Medium (L300 / Traga)</field>
+        <field name="length_cm">270</field>
+        <field name="width_cm">160</field>
+        <field name="height_cm">130</field>
+    </record>
+
+    <record id="truck_pickup_double_cabin" model="vld.truck.box">
+        <field name="name">Pickup Double Cabin (Hilux / Triton)</field>
+        <field name="length_cm">150</field>
+        <field name="width_cm">150</field>
+        <field name="height_cm">60</field>
+    </record>
+
+    <record id="truck_blind_van" model="vld.truck.box">
+        <field name="name">Blind Van</field>
+        <field name="length_cm">220</field>
+        <field name="width_cm">130</field>
+        <field name="height_cm">120</field>
+    </record>
+
+    <record id="truck_cde_box" model="vld.truck.box">
+        <field name="name">Truck CDE Box (Engkel)</field>
+        <field name="length_cm">420</field>
+        <field name="width_cm">190</field>
+        <field name="height_cm">190</field>
+    </record>
+
+    <record id="truck_cdd_box" model="vld.truck.box">
+        <field name="name">Truck CDD Box (Double)</field>
+        <field name="length_cm">520</field>
+        <field name="width_cm">200</field>
+        <field name="height_cm">200</field>
+    </record>
+
+    <record id="truck_fuso_box" model="vld.truck.box">
+        <field name="name">Truck Fuso Box</field>
+        <field name="length_cm">620</field>
+        <field name="width_cm">220</field>
+        <field name="height_cm">220</field>
+    </record>
+
+    <record id="truck_tronton_box" model="vld.truck.box">
+        <field name="name">Truck Tronton Box</field>
+        <field name="length_cm">960</field>
+        <field name="width_cm">240</field>
+        <field name="height_cm">240</field>
+    </record>
+
+    <record id="truck_container_20ft" model="vld.truck.box">
+        <field name="name">Container 20 ft</field>
+        <field name="length_cm">590</field>
+        <field name="width_cm">235</field>
+        <field name="height_cm">239</field>
+    </record>
+
+    <record id="truck_container_40ft" model="vld.truck.box">
+        <field name="name">Container 40 ft</field>
+        <field name="length_cm">1203</field>
+        <field name="width_cm">235</field>
+        <field name="height_cm">239</field>
+    </record>
+</odoo>

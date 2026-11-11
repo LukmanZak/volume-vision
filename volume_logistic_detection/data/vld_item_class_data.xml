@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- The three classes the bundled detector model knows. Sizes are left empty on
+         purpose, so each item is sized from its box in the video. Fill in a standard
+         length, width and height to use a fixed size for a class instead. -->
+
+    <record id="item_class_box" model="vld.item.class">
+        <field name="name">box</field>
+        <field name="color">#c8924b</field>
+    </record>
+
+    <record id="item_class_roll" model="vld.item.class">
+        <field name="name">roll</field>
+        <field name="color">#6aa84f</field>
+    </record>
+
+    <record id="item_class_bag" model="vld.item.class">
+        <field name="name">bag</field>
+        <field name="color">#4a90d9</field>
+    </record>
+</odoo>

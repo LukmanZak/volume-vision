@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="volume_logistic_detection.VolumeDetection" owl="1">
+        <div class="o_vld" t-att-id="this.uid">
+            <div class="o_vld_controls">
+                <div class="o_vld_field">
+                    <label>Truck box</label>
+                    <select class="form-select" t-on-change="(ev) => this.onTruckChange(ev)">
+                        <t t-if="this.state.trucks.length === 0">
+                            <option value="">No truck boxes. Add one under Configuration.</option>
+                        </t>
+                        <t t-foreach="this.state.trucks" t-as="truck" t-key="truck.id">
+                            <option t-att-value="truck.id" t-att-selected="truck.id === this.state.truckId">
+                                <t t-esc="truck.name"/> (<t t-esc="this.fmt(truck.length_cm, 0)"/> x <t t-esc="this.fmt(truck.width_cm, 0)"/> x <t t-esc="this.fmt(truck.height_cm, 0)"/> cm)
+                            </option>
+                        </t>
+                    </select>
+                </div>
+
+                <div class="o_vld_field">
+                    <label>Video</label>
+                    <select class="form-select" t-on-change="(ev) => this.onVideoChange(ev)">
+                        <t t-foreach="this.state.videos" t-as="name" t-key="name">
+                            <option t-att-value="name" t-att-selected="name === this.state.videoName">
+                                <t t-esc="name"/>
+                            </option>
+                        </t>
+                    </select>
+                </div>
+
+                <div class="o_vld_row">
+                    <div class="o_vld_field">
+                        <label>Scale (px per cm)</label>
+                        <input type="number" step="any" min="0" class="form-control"
+                               t-att-value="this.state.pxPerCm" t-on-change="(ev) => this.onScaleChange(ev)"/>
+                    </div>
+                    <div class="o_vld_field">
+                        <label>Default height (cm)</label>
+                        <input type="number" step="any" min="0" class="form-control"
+                               t-att-value="this.state.defaultHeight" t-on-change="(ev) => this.onHeightChange(ev)"/>
+                    </div>
+                </div>
+
+                <div class="o_vld_buttons">
+                    <button class="btn btn-primary" t-att-disabled="this.state.running" t-on-click="() => this.onStart()">Start detection</button>
+                    <button class="btn btn-secondary" t-att-disabled="!this.state.running" t-on-click="() => this.onStop()">Stop</button>
+                    <button class="btn btn-outline-secondary" t-on-click="() => this.onReset()">Reset truck</button>
+                </div>
+
+                <div t-if="this.state.analyzing" class="text-muted">Analyzing video frames...</div>
+
+                <div t-if="this.state.error" class="alert alert-danger o_vld_error" role="alert">
+                    <t t-esc="this.state.error"/>
+                </div>
+            </div>
+
+            <div class="o_vld_viewer">
+                <div class="o_vld_video_wrap">
+                    <video class="o_vld_video" controls="1" playsinline="1"
+                           t-att-src="this.videoUrl" preload="auto"/>
+                    <canvas class="o_vld_overlay"/>
+                    <canvas class="o_vld_canvas_hidden"/>
+                </div>
+                <div class="o_vld_scene"/>
+            </div>
+
+            <div class="o_vld_summary">
+                <div class="o_vld_stat">
+                    <span class="o_vld_stat_value"><t t-esc="this.fillPercent"/>%</span>
+                    <span class="o_vld_stat_label">Truck filled</span>
+                </div>
+                <div class="o_vld_stat">
+                    <span class="o_vld_stat_value"><t t-esc="this.fittedCount"/></span>
+                    <span class="o_vld_stat_label">Items fitted</span>
+                </div>
+                <div class="o_vld_stat">
+                    <span class="o_vld_stat_value"><t t-esc="this.overflowCount"/></span>
+                    <span class="o_vld_stat_label">Did not fit</span>
+                </div>
+                <div class="o_vld_stat">
+                    <span class="o_vld_stat_value"><t t-esc="this.fmt(this.usedVolumeCm3 / 1000000, 3)"/> m³</span>
+                    <span class="o_vld_stat_label">Used volume</span>
+                </div>
+                <div class="o_vld_stat">
+                    <span class="o_vld_stat_value"><t t-esc="this.state.detections"/></span>
+                    <span class="o_vld_stat_label">Detections (last frame)</span>
+                </div>
+            </div>
+
+            <table t-if="this.state.items.length" class="table table-sm o_vld_table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Class</th>
+                        <th class="text-end">L (cm)</th>
+                        <th class="text-end">W (cm)</th>
+                        <th class="text-end">H (cm)</th>
+                        <th class="text-end">Volume (cm³)</th>
+                        <th>Position x, y, z (cm)</th>
+                        <th>Size from</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="this.state.items" t-as="item" t-key="item.id">
+                        <tr t-att-class="item.fitted ? 'o_vld_row_item' : 'o_vld_overflow'"
+                            t-on-mouseenter="() => this.highlightItem(item.id)"
+                            t-on-mouseleave="() => this.highlightItem(null)">
+                            <td><t t-esc="item.id"/></td>
+                            <td>
+                                <span class="o_vld_swatch" t-att-style="'background:' + item.color"/>
+                                <t t-esc="item.class"/>
+                            </td>
+                            <td class="text-end"><t t-esc="this.fmt(item.l)"/></td>
+                            <td class="text-end"><t t-esc="this.fmt(item.w)"/></td>
+                            <td class="text-end"><t t-esc="this.fmt(item.h)"/></td>
+                            <td class="text-end"><t t-esc="this.fmt(item.volume, 0)"/></td>
+                            <td>
+                                <t t-if="item.fitted"><t t-esc="this.fmt(item.x, 0)"/>, <t t-esc="this.fmt(item.y, 0)"/>, <t t-esc="this.fmt(item.z, 0)"/></t>
+                                <t t-else="">-</t>
+                            </td>
+                            <td>
+                                <span t-if="item.source === 'class'">Standard size</span>
+                                <span t-else="" class="o_vld_estimated">Estimated</span>
+                            </td>
+                            <td>
+                                <span t-if="item.fitted" class="badge text-bg-success">Fitted</span>
+                                <span t-else="" class="badge text-bg-danger">Does not fit</span>
+                            </td>
+                        </tr>
+                    </t>
+                </tbody>
+            </table>
+        </div>
+    </t>
+</templates>

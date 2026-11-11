@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Truck box -->
+    <record id="view_vld_truck_box_list" model="ir.ui.view">
+        <field name="name">vld.truck.box.list</field>
+        <field name="model">vld.truck.box</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="length_cm"/>
+                <field name="width_cm"/>
+                <field name="height_cm"/>
+                <field name="volume_cm3"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_vld_truck_box_form" model="ir.ui.view">
+        <field name="name">vld.truck.box.form</field>
+        <field name="model">vld.truck.box</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="volume_cm3"/>
+                        </group>
+                        <group string="Inside Dimensions (cm)">
+                            <field name="length_cm"/>
+                            <field name="width_cm"/>
+                            <field name="height_cm"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Item class -->
+    <record id="view_vld_item_class_list" model="ir.ui.view">
+        <field name="name">vld.item.class.list</field>
+        <field name="model">vld.item.class</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="length_cm"/>
+                <field name="width_cm"/>
+                <field name="height_cm"/>
+                <field name="color" widget="color"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_vld_item_class_form" model="ir.ui.view">
+        <field name="name">vld.item.class.form</field>
+        <field name="model">vld.item.class</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="color" widget="color"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Standard Size (cm, optional)">
+                            <field name="length_cm"/>
+                            <field name="width_cm"/>
+                            <field name="height_cm"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Session (history) -->
+    <record id="view_vld_session_list" model="ir.ui.view">
+        <field name="name">vld.session.list</field>
+        <field name="model">vld.session</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="truck_id"/>
+                <field name="item_count"/>
+                <field name="used_volume_cm3"/>
+                <field name="fill_percent"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_vld_session_form" model="ir.ui.view">
+        <field name="name">vld.session.form</field>
+        <field name="model">vld.session</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="truck_id"/>
+                            <field name="state"/>
+                        </group>
+                        <group>
+                            <field name="px_per_cm"/>
+                            <field name="default_height_cm"/>
+                            <field name="fill_percent"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Items" name="items">
+                            <field name="item_ids">
+                                <list>
+                                    <field name="sequence" column_invisible="1"/>
+                                    <field name="track_ref"/>
+                                    <field name="class_name"/>
+                                    <field name="length_cm"/>
+                                    <field name="width_cm"/>
+                                    <field name="height_cm"/>
+                                    <field name="volume_cm3"/>
+                                    <field name="source"/>
+                                    <field name="fitted"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_vld_truck_box" model="ir.actions.act_window">
+        <field name="name">Truck Boxes</field>
+        <field name="res_model">vld.truck.box</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_vld_item_class" model="ir.actions.act_window">
+        <field name="name">Item Classes</field>
+        <field name="res_model">vld.item.class</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_vld_session" model="ir.actions.act_window">
+        <field name="name">Detection History</field>
+        <field name="res_model">vld.session</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_volume_detection_client" model="ir.actions.client">
+        <field name="name">Volume Detection</field>
+        <field name="tag">volume_detection_client</field>
+    </record>
+
+    <!-- Menus -->
+    <menuitem
+        id="menu_vld_root"
+        name="Volume Detection"
+        sequence="60"
+       />
+
+    <menuitem
+        id="menu_vld_detect"
+        name="Detect"
+        parent="menu_vld_root"
+        action="action_volume_detection_client"
+        sequence="10"/>
+
+    <menuitem
+        id="menu_vld_history"
+        name="History"
+        parent="menu_vld_root"
+        action="action_vld_session"
+        sequence="20"/>
+
+    <menuitem
+        id="menu_vld_config"
+        name="Configuration"
+        parent="menu_vld_root"
+        sequence="90"/>
+
+    <menuitem
+        id="menu_vld_truck_box"
+        name="Truck Boxes"
+        parent="menu_vld_config"
+        action="action_vld_truck_box"
+        sequence="10"/>
+
+    <menuitem
+        id="menu_vld_item_class"
+        name="Item Classes"
+        parent="menu_vld_config"
+        action="action_vld_item_class"
+        sequence="20"/>
+</odoo>
